@@ -1,1 +1,30 @@
+name: Daily SADC Bot
 
+on:
+  schedule:
+    - cron: '0 4 * * *'  # 08:00 SAST
+  workflow_dispatch:      # Manual button for testing
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          pip install playwright
+          python -m playwright install chromium --with-deps
+      
+      - name: Run Bot
+        run: python bots.py
+      
+      # NOTE: Cookies will be saved in the temporary workspace.
+      # FOR LONG TERM: You may need to re-login manually once a month 
+      # when cookies expire on Ubuntu runners.
